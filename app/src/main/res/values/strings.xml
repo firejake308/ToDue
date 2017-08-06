@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">ToDue</string>
+    <string name="action_settings">Settings</string>
+    <string name="title">Title</string>
+    <string name="prompt_do_date">Do Date: Tap to Select</string>
+    <string name="prompt_due_date">Due Date: Tap to Select</string>
+    <string name="display_do_date">Do Date: %s</string>
+    <string name="display_due_date">Due Date: %s</string>
+    <string name="error_no_title">Please provide a title</string>
+    <string name="error_no_due_date">Please select a due date</string>
+    <string name="error_no_do_date">Please select a do date</string>
+    <string name="task_display_date_format">%1$s &#8211; %2$s</string>
+    <string-array name="task_categories">
+        <item>Personal</item>
+        <item>Biology</item>
+        <item>Chemistry</item>
+        <item>Calculus</item>
+        <item>Miscellaneous</item>
+    </string-array>
+</resources>
