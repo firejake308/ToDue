@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -66,12 +67,9 @@ public class DailyTaskListFragment extends Fragment {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
         }
 
-        // TODO remove this
-        // populate dummy content
-        dailyTasks.add(new Task("Make my bed", new Date(), new Date(), "Personal"));
-
         // initialize db stuff
         mDbHelper = new TaskListDbHelper(getContext());
+        new FetchSavedTasksTask().execute();
     }
 
     @Override
@@ -112,8 +110,15 @@ public class DailyTaskListFragment extends Fragment {
         mListener = null;
     }
 
+    @Override
+    public void onDestroy() {
+        mDbHelper.close();
+        super.onDestroy();
+    }
+
     public static void addDailyTask(Task task) {
-        dailyTasks.add(task);
+        if (!dailyTasks.contains(task))
+            dailyTasks.add(task);
     }
 
     /**
@@ -173,11 +178,18 @@ public class DailyTaskListFragment extends Fragment {
                     doDate = format.parse(doDateStr);
                     dueDate = format.parse(dueDateStr);
                 } catch(ParseException e) {
-
+                    Log.e("ParseException", "couldn't parse date from db", e);
                 }
+                addDailyTask(new Task(title, doDate, dueDate, category));
             }
+            cursor.close();
 
-            return OTHER_FAILURE;
+            return SUCCESS;
+        }
+
+        @Override
+        public void onPostExecute(Integer result) {
+            mAdapter.notifyDataSetChanged();
         }
     }
 }

@@ -70,6 +70,12 @@ public class NewTaskActivity extends AppCompatActivity implements DatePickerDial
     }
 
     @Override
+    public void onDestroy() {
+        mDbHelper.close();
+        super.onDestroy();
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_new_task, menu);

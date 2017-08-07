@@ -3,6 +3,7 @@ package com.insertcoolnamehere.todue;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 /**
  * Created by hassa on 8/6/2017.
@@ -20,7 +21,8 @@ public class TaskListDbHelper extends SQLiteOpenHelper {
     }
 
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL(TaskListContract.SQL_CLEAR_TASK_LIST);
+        db.execSQL(TaskListContract.SQL_CREATE_TASK_LIST);
+        Log.d("DbHelper", "Executing SQL statement: " + TaskListContract.SQL_CREATE_TASK_LIST);
     }
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // delete everything and start over

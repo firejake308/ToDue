@@ -50,4 +50,9 @@ public class Task {
     public void setCategory(String category) {
         this.category = category;
     }
+
+    @Override
+    public boolean equals(Object other) {
+        return other instanceof Task && this.title.equals(((Task)other).title);
+    }
 }
