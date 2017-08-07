@@ -20,6 +20,7 @@ import com.insertcoolnamehere.todue.dummy.DummyContent.DummyItem;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -119,6 +120,18 @@ public class DailyTaskListFragment extends Fragment {
     public static void addDailyTask(Task task) {
         if (!dailyTasks.contains(task))
             dailyTasks.add(task);
+
+        // resort task list
+        for (int i = 0; i < dailyTasks.size(); i++) {
+            for(int j = 0; j < dailyTasks.size()-1; j++) {
+                if (dailyTasks.get(j).compareTo(dailyTasks.get(j+1)) > 0) {
+                    // switch if the previous task has a later do date
+                    Task laterTask = dailyTasks.get(j);
+                    dailyTasks.set(j, dailyTasks.get(j+1));
+                    dailyTasks.set(j+1, laterTask);
+                }
+            }
+        }
     }
 
     /**

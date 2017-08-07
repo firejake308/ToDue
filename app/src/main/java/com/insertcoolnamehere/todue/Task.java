@@ -1,12 +1,14 @@
 package com.insertcoolnamehere.todue;
 
+import android.support.annotation.NonNull;
+
 import java.util.Date;
 
 /**
  * Represents an individual task in a to-do list
  */
 
-public class Task {
+public class Task implements Comparable<Task>{
     private String title;
     private Date doDate;
     private Date dueDate;
@@ -54,5 +56,10 @@ public class Task {
     @Override
     public boolean equals(Object other) {
         return other instanceof Task && this.title.equals(((Task)other).title);
+    }
+
+    @Override
+    public int compareTo(@NonNull Task other) {
+        return this.doDate.compareTo(other.doDate);
     }
 }

@@ -1,9 +1,11 @@
 package com.insertcoolnamehere.todue;
 
+import android.provider.ContactsContract;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.insertcoolnamehere.todue.DailyTaskListFragment.OnListFragmentInteractionListener;
@@ -45,6 +47,27 @@ public class TaskListRecyclerViewAdapter extends RecyclerView.Adapter<TaskListRe
         Date dueDate = mValues.get(position).getDueDate();
         holder.mDateView.setText(String.format(holder.mDateView.getContext().getString(R.string.task_display_date_format), formatter.format(doDate), formatter.format(dueDate)));
 
+        // set icon based on category
+        switch (holder.mItem.getCategory()) {
+            case "Biology":
+                holder.mIconView.setImageDrawable(holder.mView.getContext().getDrawable(R.drawable.ic_category_biology));
+                holder.mIconView.setBackground(holder.mView.getContext().getDrawable(R.drawable.background_biology));
+                break;
+            case "Chemistry":
+                holder.mIconView.setImageDrawable(holder.mView.getContext().getDrawable(R.drawable.ic_category_chemistry));
+                holder.mIconView.setBackground(holder.mView.getContext().getDrawable(R.drawable.background_chemistry));
+                break;
+            case "Calculus":
+                holder.mIconView.setImageDrawable(holder.mView.getContext().getDrawable(R.drawable.ic_category_calculus));
+                holder.mIconView.setBackground(holder.mView.getContext().getDrawable(R.drawable.background_calculus));
+                break;
+            case "Personal":
+            default:
+                holder.mIconView.setImageDrawable(holder.mView.getContext().getDrawable(R.drawable.ic_category_personal));
+                holder.mIconView.setBackground(holder.mView.getContext().getDrawable(R.drawable.background_personal));
+                break;
+        }
+
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -66,6 +89,7 @@ public class TaskListRecyclerViewAdapter extends RecyclerView.Adapter<TaskListRe
         public final View mView;
         public final TextView mTitleView;
         public final TextView mDateView;
+        public final ImageView mIconView;
         public Task mItem;
 
         public ViewHolder(View view) {
@@ -73,6 +97,7 @@ public class TaskListRecyclerViewAdapter extends RecyclerView.Adapter<TaskListRe
             mView = view;
             mTitleView = (TextView) view.findViewById(R.id.id);
             mDateView = (TextView) view.findViewById(R.id.content);
+            mIconView = (ImageView) view.findViewById(R.id.category_icon);
         }
 
         @Override
