@@ -2,6 +2,7 @@ package com.insertcoolnamehere.todue;
 
 import android.provider.ContactsContract;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +22,7 @@ import java.util.Locale;
  * specified {@link OnListFragmentInteractionListener}.
  * TODO: Replace the implementation with code for your data type.
  */
-public class TaskListRecyclerViewAdapter extends RecyclerView.Adapter<TaskListRecyclerViewAdapter.ViewHolder> {
+public class TaskListRecyclerViewAdapter extends RecyclerView.Adapter<TaskListRecyclerViewAdapter.ViewHolder> implements ItemTouchHelperAdapter {
 
     private final List<Task> mValues;
     private final OnListFragmentInteractionListener mListener;
@@ -83,6 +84,21 @@ public class TaskListRecyclerViewAdapter extends RecyclerView.Adapter<TaskListRe
     @Override
     public int getItemCount() {
         return mValues.size();
+    }
+
+    @Override
+    public void onItemMove(int fromPos, int toPos) {
+        Task displacedTask = mValues.get(toPos);
+        mValues.set(toPos, mValues.get(fromPos));
+        mValues.set(fromPos, displacedTask);
+        notifyItemMoved(fromPos, toPos);
+    }
+
+    @Override
+    public void onItemDismiss(int pos) {
+        mValues.remove(pos);
+        mListener.onDismissItem(mValues.get(pos));
+        notifyItemRemoved(pos);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

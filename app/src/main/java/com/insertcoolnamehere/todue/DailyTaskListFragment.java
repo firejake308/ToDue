@@ -1,6 +1,7 @@
 package com.insertcoolnamehere.todue;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
@@ -9,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -89,7 +91,13 @@ public class DailyTaskListFragment extends Fragment {
             }
             mAdapter = new TaskListRecyclerViewAdapter(dailyTasks, mListener);
             recyclerView.setAdapter(mAdapter);
+
+            // set touch helper adapter
+            ItemTouchHelper.Callback callback = new MyItemTouchHelperCallback(mAdapter);
+            ItemTouchHelper helper = new ItemTouchHelper(callback);
+            helper.attachToRecyclerView(recyclerView);
         }
+
         return view;
     }
 
@@ -147,6 +155,7 @@ public class DailyTaskListFragment extends Fragment {
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
         void onListFragmentInteraction(Task item);
+        void onDismissItem(Task item);
     }
 
     private class FetchSavedTasksTask extends AsyncTask<Void, Void, Integer> {
@@ -192,6 +201,7 @@ public class DailyTaskListFragment extends Fragment {
                     dueDate = format.parse(dueDateStr);
                 } catch(ParseException e) {
                     Log.e("ParseException", "couldn't parse date from db", e);
+                    return OTHER_FAILURE;
                 }
                 addDailyTask(new Task(title, doDate, dueDate, category));
             }

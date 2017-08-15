@@ -1,6 +1,8 @@
 package com.insertcoolnamehere.todue;
 
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -14,8 +16,12 @@ import android.view.MenuItem;
 
 import com.insertcoolnamehere.todue.dummy.DummyContent;
 
+import java.text.SimpleDateFormat;
+import java.util.Locale;
+
 public class MainActivity extends AppCompatActivity implements DailyTaskListFragment.OnListFragmentInteractionListener{
     private ViewPager mViewPager;
+    private TaskListDbHelper mDbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +47,9 @@ public class MainActivity extends AppCompatActivity implements DailyTaskListFrag
                 MainActivity.this.startActivity(intent);
             }
         });
+
+        // initialize db stuff
+        mDbHelper = new TaskListDbHelper(this);
     }
 
     @Override
@@ -68,5 +77,31 @@ public class MainActivity extends AppCompatActivity implements DailyTaskListFrag
     @Override
     public void onListFragmentInteraction(Task item) {
 
+    }
+
+    @Override
+    public void onDismissItem(Task item) {
+        new DeleteRowTask(item).execute();
+    }
+
+    private class DeleteRowTask extends AsyncTask<Void, Void, Integer> {
+        private final int SUCCESS = 0;
+        private final int FAILURE = 1;
+        private Task taskToDelete;
+
+        DeleteRowTask(Task taskToDelete) {
+            this.taskToDelete = taskToDelete;
+        }
+
+        public Integer doInBackground(Void... params) {
+            SQLiteDatabase db = mDbHelper.getWritableDatabase();
+            String whereClause = TaskListContract.TaskListEntry.COLUMN_NAME_TITLE + " = ? AND "
+                    + TaskListContract.TaskListEntry.COLUMN_NAME_DO_DATE + " = ?";
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+            String[] whereArgs = {taskToDelete.getTitle(), format.format(taskToDelete.getDueDate())};
+            db.delete(TaskListContract.TaskListEntry.TABLE_NAME, whereClause, whereArgs);
+
+            return SUCCESS;
+        }
     }
 }
